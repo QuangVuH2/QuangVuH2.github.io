@@ -1,0 +1,23 @@
+﻿<div class="navbar-nav ml-auto py-0">
+    @if (System.Web.HttpContext.Current.Session["UserCustomer"].Equals(""))
+    {
+        <a href="~/dang-nhap" class="nav-item nav-link">Đăng nhập</a>
+        <a href="~/dang-ky" class="nav-item nav-link">Đăng ký</a>
+    }
+    else
+    {
+        string Name = (string)System.Web.HttpContext.Current.Session["UserCustomer"];
+        <ul class="nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    @Name
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Thông tin</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="@Url.Action("DangXuat", "Khachhang")">Đăng xuất</a>
+                </div>
+            </li>
+        </ul>
+    }
+</div>

@@ -1,0 +1,272 @@
+﻿@model IEnumerable<CartItem>
+
+@{
+    ViewBag.Title = "ThanhToan";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section footer{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="~/Public/js/address.js"></script>
+    <script src="~/Public/js/ReceiverAddress.js"></script>
+    <script>
+        $(document).ready(() => {
+            var shipcheck = document.getElementById('shipto');
+            shipcheck.onload = shipTo(); 
+        })
+        function shipTo() {
+            var shipcheck = document.getElementById('shipto');
+            if ($('#shipto').is(":checked")) {
+                $('#shipto').val("true");                
+            }
+            else {
+                $('#shipto').val("false");
+            }
+        }
+    </script>
+}
+<!-- Navbar Start -->
+<div class="container-fluid">
+    <div class="row border-top px-xl-5">
+        @Html.Action("ListCategory", "Module")
+        <div class="col-lg-9">
+            <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+                <a href="" class="text-decoration-none d-block d-lg-none">
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    @Html.Action("ManinMeu", "Module")
+                    @Html.Action("login", "Module")
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Navbar End -->
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Thanh Toán</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Trang chủ</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Thanh toán</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+<!-- Checkout Start -->
+@using (Html.BeginForm("ThanhToan", "Giohang", FormMethod.Post))
+{
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-8">
+                <div class="mb-4">
+                    <h4 class="font-weight-semi-bold mb-4">Thông tin khách mua hàng</h4>
+                    @Html.Partial("Message")
+                    <div class="row">
+                        @if (!System.Web.HttpContext.Current.Session["UserCustomer"].Equals(""))
+                        {
+                            foreach (var info in ViewBag.Customer)
+                            {
+                                <div class="col-md-6 form-group">
+                                    <label>Tên khách hàng</label>
+                                    <input class="form-control" name="ordererName" type="text" value="@info.FullName" readonly>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>E-mail</label>
+                                    <input class="form-control" name="E-mail" type="text" value="@info.Email" readonly>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Điện thoại</label>
+                                    <input class="form-control" name="ordererPhone" type="text" value="@info.Phone" required>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Địa chỉ </label>
+                                    <input class="form-control" type="text" name="ordererAddress" value="@info.Address">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label>Ghi Chú</label>
+                                    <input class="form-control" name="note" type="text">
+                                </div>
+                            }
+                        }
+                        else
+                        {                            
+                            <div class="col-md-6 form-group">
+                                <label>Tên khách hàng</label>
+                                <input class="form-control" name="ordererName" type="text" placeholder="Nguyễn Van A">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>E-mail</label>
+                                <input class="form-control" name="E-mail" type="text" placeholder="NguyenVanA@gmail.com">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Điện thoại</label>
+                                <input class="form-control" name="ordererPhone" type="text" placeholder="0123456789">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Địa chỉ số nhà </label>
+                                <input class="form-control" name="so-nha" type="text" placeholder="123 võ thị sáu">
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Tỉnh thành</label>
+                                <select class="custom-select name-city" id="city">
+                                    <option selected>chọn tỉnh/thành phố</option>
+                                </select>
+                                <input class="form-control" name="cty" id="cty" value="" hidden />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Quận huyện</label>
+                                <select class="custom-select district" id="district">
+                                    <option value="" selected>Chọn quận/huyện</option>
+                                </select>
+                                <input class="form-control" name="quan-huyen" id="quan-huyen" value="" hidden />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Xã phường</label>
+                                <select class="custom-select ward" id="ward">
+                                    <option value="" selected>chọn xã/phường</option>
+                                </select>
+                                <input class="form-control" name="xa-phuong" id="xa-phuong" value="" hidden />
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label>Ghi Chú</label>
+                                <input class="form-control" name="note" type="text">
+                            </div>
+                        }
+                        <div class="col-md-12 form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="newaccount">
+                                <label class="custom-control-label" for="newaccount">Create an account</label>
+                            </div>
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="checkboxid" class="custom-control-input" id="shipto" value="false" onchange="shipTo()">
+                                <label class="custom-control-label" for="shipto" data-toggle="collapse" data-target="#shipping-address" aria-expanded="false">Địa chỉ giao hàng khác</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse mb-4" id="shipping-address">
+                    <h4 class="font-weight-semi-bold mb-4">Thông tin người nhận hàng</h4>
+                    <div class="row">                        
+                        <div class="col-md-6 form-group">
+                            <label>Tên người nhận:</label>
+                            <input class="form-control" name="ReceiverName" type="text" placeholder="John">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>E-mail người nhận</label>
+                            <input class="form-control" type="text" name="ReceiverEmail" placeholder="example@email.com">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Điện thoại người nhận</label>
+                            <input class="form-control" type="text" name="ReceiverPhone" placeholder="+123 456 789">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Địa chỉ số nhà </label>
+                            <input class="form-control" type="text" name="so-nha1" placeholder="123 võ thị sáu">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Tỉnh thành</label>
+                            <select class="custom-select name-city1" id="city1">
+                                <option selected>chọn tỉnh/thành phố</option>
+                            </select>
+                            <input class="form-control" name="cty1" id="cty1" value="" hidden />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Quận huyện</label>
+                            <select class="custom-select district1" id="district1">
+                                <option value="" selected>Chọn quận/huyện</option>
+                            </select>
+                            <input class="form-control" name="quan-huyen1" id="quan-huyen1" value="" hidden />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Xã phường</label>
+                            <select class="custom-select ward1" id="ward1">
+                                <option value="" selected>chọn xã/phường</option>
+                            </select>
+                            <input class="form-control" name="xa-phuong1" id="xa-phuong1" value="" hidden />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Ghi Chú</label>
+                            <input class="form-control" name="note" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Sản Phẩm Đã Mua</h4>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="font-weight-medium mb-3">Sản Phẩm</h5>
+                        <table class="table table-bordered" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Tên Sản Phẩm</th>
+                                    <th>Số Lượng</th>
+                                    <th>Thành Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{decimal tongtien = 0;}
+                                @foreach (var product in Model)
+                                {
+
+                                    <tr>
+                                        <td>@product.Name</td>
+                                        <td style="text-align:center;">@product.Qty</td>
+                                        <td>@product.Amuont.ToString("#,##0") đồng</td>
+                                    </tr>
+
+                                    tongtien += product.Amuont;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-bold">Tổng Tiền</h5>
+                            <h5 class="font-weight-bold">@tongtien.ToString("#,##0") đồng</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                                <label class="custom-control-label" for="paypal">Paypal</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
+                                <label class="custom-control-label" for="directcheck">Direct Check</label>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
+                                <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" type="submit">Đặt Hàng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- Checkout End -->

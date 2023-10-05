@@ -1,0 +1,115 @@
+﻿@model MyClass.Models.Order
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content my-2">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                @using (Html.BeginForm("Delete", "Order", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>XÁC NHẬN XÓA ĐƠN HÀNG</strong>
+                        </div>
+                        <div class="col-md-6 text-right">                           
+                            <a href="@Url.Action("Trash", "Order")" class="btn btn-sm btn-info"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                            <button class="btn btn-sm btn-danger" type="submit"><i class="fas fa-trash-alt"></i> Xóa</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px">Tên trường</th>
+                            <th colspan="5">Nội dung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Tên người nhận</td>
+                            <td colspan="4">
+                                @Html.EditorFor(model => model.ReceiverName, new { htmlAttributes = new { @class = "form-control" } })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Địa chỉ</td>
+                            <td colspan="4">
+                                @Html.EditorFor(model => model.ReceiverAddress, new { htmlAttributes = new { @class = "form-control" } })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Số điện thoại</td>
+                            <td colspan="4">
+                                @Html.EditorFor(model => model.ReceiverPhone, new { htmlAttributes = new { @class = "form-control" } })
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="5" style="text-align:center; font-size:20px">Sản phẩm đã mua</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mã sản phẩm</td>
+                            <td>Tên sản phẩm</td>
+                            <td style="text-align:center">Số lượng</td>
+                            <td>Giá</td>
+                            <td>Thành tiền</td>                            
+                        </tr>
+                        @{
+                            int tongtien = 0;
+                            int orderId = Model.Id;                           
+                        }
+                        @foreach (var item in ViewBag.listproduct)
+                        {
+                            <tr>
+                                <td>
+                                    @item.ProductId
+                                    <input class="form-control" name="productId" value="@item.ProductId" hidden>
+                                </td>
+                                <td>@item.ProductName</td>
+                                <td class="align-middle">
+                                    <input class="form-control" name="productId" value="@item.Qty" hidden>
+                                </td>
+                                <td>
+                                    @item.Price.ToString("#,##0") VND
+                                    <input class="form-control" name="price" value="@item.Price" style="width: 150px" hidden>
+                                </td>
+                                <td id="@item.ProductId">
+                                    @item.Amount.ToString("#,##0") VND
+                                    <input id="Id-@item.ProductId" name="Amount" value="@item.Amount" style="width: 150px" hidden>
+                                </td>                
+                            </tr>
+                            tongtien += item.Amount;
+                        }
+
+                        <tr>
+                            <td>Tổng tiền</td>
+                            <td colspan="4">
+                                <span id="tong-tien">@tongtien.ToString("#,##0") VND</span>
+                            </td>
+                        </tr>                       
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

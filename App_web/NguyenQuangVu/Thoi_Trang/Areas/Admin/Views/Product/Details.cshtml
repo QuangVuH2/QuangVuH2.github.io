@@ -1,0 +1,92 @@
+﻿@model IEnumerable<MyClass.View_Models.ProductView>
+@{
+    ViewBag.Title = "Chi tiết sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";    
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content my-2">
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>CHI TIẾT SẢN PHẨM</strong>
+                    </div>
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-6 text-right">
+                            <a href="@Url.Action("Edit", "Product", new { id = item.Id  })" class="btn btn-sm btn-info"><i class="fas fa-edit"></i> Cập nhật </a>
+                            <a href="@Url.Action("Index", "Product")" class="btn btn-sm btn-info"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 120px">Tên trường</th>
+                        <th>Nội dung</th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>Tên sản phẩm</td>
+                            <td>@item.Name</td>
+                        </tr>
+                        <tr>
+                            <td>Loại sản phẩm</td>
+                            <td>@item.CatName</td>
+                        </tr>
+                        <tr>
+                            <td>Nhà sản xuất</td>
+                            <td>@item.SupName</td>
+                        </tr>
+                        <tr>
+                            <td>Số lượng</td>
+                            <td>@item.Number</td>
+                        </tr>
+                        <tr>
+                            <td>hình ảnh</td>
+                            <td><img src="~/Public/images/products/@item.Img" alt="TenHinh" class="img-thumbnail" width="200px" height="200px" /></td>
+                        </tr>
+                        <tr>
+                            <td>Nội dung</td>
+                            <td>@item.Detail</td>
+                        </tr>
+                        <tr>
+                            <td>Từ khóa</td>
+                            <td>@item.MetaKey</td>
+                        </tr>
+                        <tr>
+                            <td>Giá bán</td>
+                            <td>@item.Price.ToString("#,##0") Đồng</td>
+                        </tr>
+                        <tr>
+                            <td>Giá khuyến mãi</td>
+                            <td>@item.PriceSale.ToString("#,##0") Đồng</td>
+                        </tr>
+                        <tr>
+                            <td>Ngày đăng</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", item.CreateAt) </td>                                                                                        
+                        </tr>
+                        <tr>
+                            <td>Ngày cặp nhật</td>
+                            <td>@string.Format("{0:dd/MM/yyyy}", item.UpdateAt) </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

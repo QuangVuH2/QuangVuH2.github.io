@@ -1,0 +1,122 @@
+﻿@model MyClass.Models.Order
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section footer {
+
+    <script src="~/Public/js/Status.js"></script>
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content my-2">
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>CHI TIẾT ĐƠN HÀNG</strong>
+                    </div>
+
+                    <div class="col-md-6 text-right">
+                        <a href="@Url.Action("Edit", "Order", new { id = Model.Id })" class="btn btn-sm btn-info"><i class="fas fa-edit"></i> Cập nhật </a>
+                        <a href="@Url.Action("Index", "Order")" class="btn btn-sm btn-info"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 200px">Tên trường</th>
+                            <th colspan="5">Nội dung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.OrderInfo)
+                        {
+                            if (item.UserId != 0)
+                            {
+                                <tr>
+                                    <td>Người đặt hàng</td>
+                                    <td colspan="4">@item.OrderName</td>
+                                </tr>
+                                <tr>
+                                    <td>Số điện thoại</td>
+                                    <td colspan="4">@item.OrderPhone</td>
+                                </tr>
+                            }
+                        }
+
+                        <tr>
+                            <td>Tên người nhận</td>
+                            <td colspan="4">@Model.ReceiverName</td>
+                        </tr>
+                        <tr>
+                            <td>Địa chỉ</td>
+                            <td colspan="4">@Model.ReceiverAddress</td>
+                        </tr>
+                        <tr>
+                            <td>Số điện thoại</td>
+                            <td colspan="4">@Model.ReceiverPhone</td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="5" style="text-align:center; font-size:20px">Sản phẩm đã mua</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mã sản phẩm</td>
+                            <td>Tên sản phẩm</td>
+                            <td>Số lượng</td>
+                            <td>Giá</td>
+                            <td>Thành tiền</td>
+                        </tr>
+                        @{ int tongtien = 0;}
+                        @foreach (var item in ViewBag.OrderInfo)
+                        {
+                            <tr>
+                                <td>@item.ProductId</td>
+                                <td>@item.ProductName</td>
+                                <td>@item.Qty</td>
+                                <td>@item.Price.ToString("#,##0") VND</td>
+                                <td>@item.Amount.ToString("#,##0") VND</td>
+                            </tr>
+                            tongtien += item.Amount;
+                        }
+
+                        <tr>
+                            <td>Tổng tiền</td>
+                            <td colspan="4">@tongtien.ToString("#,##0") VND</td>
+                        </tr>
+                        <tr>
+                            <td>Trạng thái</td>
+                            <td colspan="4">
+                                @if (Model.Status == 1)
+                                {
+                                    <a href="#"  class="btn btn-sm btn-success btn-status" data-id="@Model.Id" data-toggle="tooltip" data-placement="right" title="Đã duyệt">@(Model.Status == 1 ? Html.Raw("<i class='fas fa-toggle-on'></i>")  : Html.Raw("<i class='fas fa-toggle-off'></i>"))</a>
+                                }
+                                else
+                                {
+                                    <a href="" class="btn btn-sm btn-danger btn-status" data-id="@Model.Id" data-toggle="tooltip" data-placement="right" title="Chờ duyệt">@(Model.Status == 2 ? Html.Raw("<i class='fas fa-toggle-off'></i>")  : Html.Raw("<i class='fas fa-toggle-on'></i>")) </a>
+                                }
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

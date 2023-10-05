@@ -1,0 +1,9 @@
+﻿@model IEnumerable<MyClass.Models.Menu>
+
+<div class="navbar-nav mr-auto py-0">
+    @foreach (var menu in Model)
+    {
+        @Html.Action("ManinMeuSub", "Module", new {@id = menu.Id})
+    }
+    
+</div>

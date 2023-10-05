@@ -1,0 +1,150 @@
+﻿@model MyClass.Models.User
+
+@{
+    ViewBag.Title = "DangKy";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section footer{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="~/Public/js/address.js"></script>
+}
+<!-- Navbar Start -->
+<div class="container-fluid">
+    <div class="row border-top px-xl-5">
+        @Html.Action("ListCategory", "Module")
+        <div class="col-lg-9">
+            <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+                <a href="" class="text-decoration-none d-block d-lg-none">
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    @Html.Action("ManinMeu", "Module")
+                    @Html.Action("login", "Module")
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Navbar End -->
+<!-- Page Header Start -->
+<div class="container-fluid bg-secondary mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <h1 class="font-weight-semi-bold text-uppercase mb-3">Đăng ký khách hàng</h1>
+        <div class="d-inline-flex">
+            <p class="m-0"><a href="">Trang chủ</a></p>
+            <p class="m-0 px-2">-</p>
+            <p class="m-0">Đăng ký</p>
+        </div>
+    </div>
+</div>
+<!-- Page Header End -->
+<h2 style="text-align:center">Đăng ký</h2>
+@using (Html.BeginForm("DangKy", "Khachhang", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <!-- Checkout Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-12">
+                <h4 class="font-weight-semi-bold mb-4" style="text-align:center;">Thông tin khách hàng</h4>
+            </div>
+            @if (!System.Web.HttpContext.Current.Session["UserCustomer"].Equals(""))
+            {                 
+                  @Html.Raw(ViewBag.Success)
+            }
+            else
+            {
+                <div class="col-lg-8">
+                    <div class="mb-5">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="col-md-10 form-group">
+                            <label>Tên đăng nhập</label>
+                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            @Html.Raw(ViewBag.UserError)
+                        </div>
+
+                        <div class="col-md-10 form-group">
+                            <label>Mặt khẩu</label>
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "1234567", type = "password" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-10 form-group">
+                            <label>Nhập lại mặt khẩu</label>
+                            <input class="form-control" name="confirmPass" type="password" placeholder="1234567" required>
+                            @Html.Raw(ViewBag.PassError)
+                        </div>
+
+                        <div class="col-md-10 form-group">
+                            <label>Tên khách hàng</label>
+                            @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", placeholder = "Nguyễn Văn A" } })
+                            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-10 form-group">
+                            <label>Nhập Email</label>
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email@gmail.com" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-10 form-group">
+                            <label>Nhập số điện thoại</label>
+                            @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", placeholder = "0123456789" } })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-4">
+                        <div class="col-md-10 form-group">
+                            <label>Địa chỉ số nhà </label>
+                            <input class="form-control" type="text" name="so-nha" placeholder="123 võ thị sáu">
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <label>Tỉnh thành</label>
+                            <select class="custom-select name-city" id="city">
+                                <option selected>chọn tỉnh/thành phố</option>
+                            </select>
+                            <input class="form-control" name="cty" id="cty" value="" hidden />
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <label>Quận huyện</label>
+                            <select class="custom-select district" id="district">
+                                <option value="" selected>Chọn quận/huyện</option>
+                            </select>
+                            <input class="form-control" name="quan-huyen" id="quan-huyen" value="" hidden />
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <label>Xã phường</label>
+                            <select class="custom-select ward" id="ward">
+                                <option value="" selected>chọn xã/phường</option>
+                            </select>
+                            <input class="form-control" name="xa-phuong" id="xa-phuong" value="" hidden />
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <label>Giới tính</label>
+                            <select class="custom-select" id="Gender" name="Gender">
+                                <option value="" selected>chọn giới tính</option>
+                                <option value="1">Nam</option>
+                                <option value="2">Nữ</option>
+                            </select>
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (System.Web.HttpContext.Current.Session["UserCustomer"].Equals(""))
+        {
+            <div class="col-md-2 form-group" style="margin:auto">
+                <button class="btn btn-lg btn-primary" style="width: 250px;" type="submit">Đăng ký</button>
+            </div>
+        }
+    </div>
+    <!-- Checkout End -->
+}

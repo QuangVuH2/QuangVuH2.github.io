@@ -1,0 +1,145 @@
+﻿@model MyClass.Models.Order
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section footer{
+    <script src="~/Public/js/Status.js"></script>
+}
+
+@using (Html.BeginForm("Edit", "Order", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.UserId)
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+
+        <!-- Main content -->
+        <section class="content my-2">
+            <!-- Default box -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>CẬP NHẬT ĐƠN HÀNG</strong>
+                        </div>
+
+                        <div class="col-md-6 text-right">
+                            <button type="submit" name="Update" class="btn btn-sm btn-info"><i class="fas fa-save"></i> Lưu[Update]</button>
+                            <a href="@Url.Action("Index", "Order")" class="btn btn-sm btn-info"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 200px">Tên trường</th>
+                                <th colspan="6">Nội dung</th>
+                            </tr>
+                        </thead>
+                        <tbody>                          
+                            <tr>
+                                <td>Tên người nhận</td>
+                                <td colspan="5">
+                                    @Html.EditorFor(model => model.ReceiverName, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Địa chỉ</td>
+                                <td colspan="5">
+                                    @Html.EditorFor(model => model.ReceiverAddress, new { htmlAttributes = new { @class = "form-control" } })                                   
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Số điện thoại</td>
+                                <td colspan="5">
+                                    @Html.EditorFor(model => model.ReceiverPhone, new { htmlAttributes = new { @class = "form-control" } })
+                                </td>
+                            </tr>
+                        </tbody>
+                        <thead>
+                            <tr>
+                                <th colspan="6" style="text-align:center; font-size:20px">Sản phẩm đã mua</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mã sản phẩm</td>
+                                <td>Tên sản phẩm</td>
+                                <td style="text-align:center">Số lượng</td>
+                                <td>Giá</td>
+                                <td>Thành tiền</td>
+                                <td style="text-align:center">Xóa</td>
+                            </tr>
+                            @{ 
+                                int tongtien = 0;
+                                int orderId = Model.Id;
+                                int soluongsp = ViewBag.totalProduct;
+                             }
+                            @foreach (var item in ViewBag.OrderInfo)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.ProductId
+                                        <input class="form-control" name="productId" value="@item.ProductId" hidden>
+                                    </td>
+                                    <td>@item.ProductName</td>
+                                    <td class="align-middle">
+                                        <div class="input-group quantity mx-auto" style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-minus" onclick="var result = document.getElementById('sst-@item.ProductId'); var sst = result.value; if (!isNaN(sst) &amp;&amp; sst > 1 ||  (sst == 1) &amp;&amp; confirm('Bạn muốn xóa sản phẩm này khỏi đơn hàng?')) result.value--; UpdateItem(@orderId, @item.ProductId, result.value); return false;" type="button">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="text" name="Qty" class="form-control form-control-sm bg-secondary text-center" id="sst-@item.ProductId" value="@item.Qty" readonly>
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-plus" onclick="var result = document.getElementById('sst-@item.ProductId'); var sst = result.value; if (!isNaN(sst)) result.value++; UpdateItem(@orderId, @item.ProductId, result.value); return false;" type="button">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @item.Price.ToString("#,##0") VND
+                                        <input class="form-control" name="price" value="@item.Price.ToString("#,##0")" style="width: 150px" hidden>
+                                    </td>
+                                    <td id="@item.ProductId">
+                                        @item.Amount.ToString("#,##0") VND
+                                        <input id="Id-@item.ProductId" name="Amount" value="@item.Amount.ToString("#,##0")" style="width: 150px" hidden>
+                                    </td>
+                                    <td style="text-align:center">
+                                        <span class="btn btn-sm btn-primary btn-delete" data-productid="@item.ProductId" onclick="DeleteItem(@orderId, @item.ProductId)" > <i class="fa fa-times"></i> </span>
+                                    </td>
+                                </tr>
+                                tongtien += item.Amount;
+                            }
+
+                            <tr>
+                                <td>Tổng tiền</td>
+                                <td colspan="5">
+                                    <span id="tong-tien">@tongtien.ToString("#,##0") VND</span>                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Trạng thái</td>
+                                <td colspan="5">
+                                    @Html.DropDownListFor(model => model.Status, new[] { new SelectListItem { Text = "Chưa duyệt", Value = "2" }, new SelectListItem { Text = "Đã duyệt", Value = "1" } }, new { @class = "btn btn-secondary" })
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+}

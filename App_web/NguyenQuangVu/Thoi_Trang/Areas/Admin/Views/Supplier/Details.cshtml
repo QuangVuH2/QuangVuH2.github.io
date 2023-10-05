@@ -1,0 +1,89 @@
+﻿@model MyClass.Models.Supplier
+
+@{
+    ViewBag.Title = "Chi tiết nhà cung cấp";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content my-2">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>CHI TIẾT NHÀ CUNG CẤP</strong>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <a href="@Url.Action("Edit", "Supplier", new { id = Model.Id })" class="btn btn-sm btn-info"><i class="fas fa-edit"></i> Cập nhật </a>
+                        <a href="@Url.Action("Index", "Supplier")" class="btn btn-sm btn-info"><i class="fas fa-arrow-left"></i> Quay lại</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 120px">Tên trường</th>
+                        <th>Nội dung</th>
+                    </tr>
+                    <tr>
+                        <td>Tên</td>
+                        <td>@Html.DisplayFor(model => model.Name)</td>
+                    </tr>
+                    <tr>
+                        <td>Tên đầy đủ</td>
+                        <td>@Html.DisplayFor(model => model.FullName)</td>
+                    </tr>
+                    <tr>
+                        <td>Số điên thoại</td>
+                        <td>@Html.DisplayFor(model => model.Phone)</td>
+                    </tr>
+                    <tr>
+                        <td>Website</td>
+                        <td>@Html.DisplayFor(model => model.UrlSite)</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@Html.DisplayFor(model => model.Email)</td>
+                    </tr>
+                    <tr>
+                        <td>Tứ khóa</td>
+                        <td>@Html.DisplayFor(model => model.MetaKey)</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày tạo</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", Model.CreateAt)</td>
+                    </tr>
+                    <tr>
+                        <td>Ngày cặp nhật</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", Model.UpdateAt)</td>
+                    </tr>
+                    <tr>
+                        <td>Mô tả</td>
+                        <td>@Html.DisplayFor(model => model.MetaDesc)</td>
+                    </tr>
+                    <tr>
+                        <td>Trạng thái</td>
+                        @if (Model.Status == 1)
+                        {
+                            <td><label>Xuất bản</label></td>
+                        }
+                        @if (Model.Status == 2)
+                        {
+                            <td><label>Chưa xuất bản</label></td>
+                        }
+                    </tr>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

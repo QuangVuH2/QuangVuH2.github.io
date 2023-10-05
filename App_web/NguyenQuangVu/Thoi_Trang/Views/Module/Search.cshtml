@@ -1,0 +1,14 @@
+﻿
+<div class="col-lg-6 col-6 text-left">
+    @using (Html.BeginForm("SearchResult", "Timkiem", FormMethod.Post))
+    {
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Tiềm kiếm sản phẩm" required>
+            <div class="input-group-append">
+                <button class="input-group-text bg-transparent text-primary" type="submit">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>

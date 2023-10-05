@@ -1,0 +1,11 @@
+﻿@using (Html.BeginForm("SearchProName", "Timkiem", FormMethod.Post))
+{
+    <div class="input-group">
+        <input type="text" name="productName" class="form-control" placeholder="Nhập tên sản phẩm" required>
+        <div class="input-group-append">
+            <button class="input-group-text bg-transparent text-primary" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+}
